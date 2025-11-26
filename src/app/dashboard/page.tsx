@@ -18,7 +18,7 @@ interface Keluhan {
 export default function Dashboard() {
   const router = useRouter();
   const { user, profile, loading } = useAuth();
-  const [showWelcome, setShowWelcome] = useState(() => {
+  const [setShowWelcome] = useState(() => {
     try {
       if (typeof window === "undefined") return true;
       return localStorage.getItem("dashboard_welcome_dismissed") !== "1";
@@ -94,13 +94,6 @@ export default function Dashboard() {
     if (!loading && !user) router.push("/");
   }, [user, loading, router]);
 
-  const handleDismissWelcome = () => {
-    try {
-      localStorage.setItem("dashboard_welcome_dismissed", "1");
-    } catch {}
-    setShowWelcome(false);
-  };
-
   const statCards = [
     {
       title: "Total Keluhan",
@@ -162,33 +155,6 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {profile && showWelcome && (
-        <Card className="mb-6 bg-blue-50 border-blue-100 flex flex-col md:flex-row items-center justify-between p-4 gap-4">
-          <div>
-            <h3 className="text-lg font-semibold">
-              {profile.name}, selamat datang!
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Terima kasih telah mendaftar. Lengkapi profil Anda untuk
-              pengalaman terbaik.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push("/profile")}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-            >
-              Lengkapi Profil
-            </button>
-            <button
-              onClick={handleDismissWelcome}
-              className="text-gray-600 px-3 py-2 rounded-md hover:bg-gray-100 transition"
-            >
-              Tutup
-            </button>
-          </div>
-        </Card>
-      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {statCards.map((card) => {
           const Icon = card.icon;

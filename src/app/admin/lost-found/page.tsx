@@ -2,7 +2,16 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { Image as ImageIcon, CheckCircle, XCircle } from "lucide-react";
+import {
+  Image as ImageIcon,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
+  Filter,
+  Loader,
+} from "lucide-react";
 import { supabase, LostFound } from "@/lib/supabase";
 import Image from "next/image";
 import VerificationModal from "@/components/modals/VerificationModal";
@@ -144,21 +153,53 @@ export default function AdminLostFound() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "tersedia":
-        return "bg-green-100 text-green-800";
+        return {
+          color: "bg-emerald-100 text-emerald-800",
+          bgColor: "bg-emerald-50",
+          textColor: "text-emerald-600",
+          borderColor: "border-emerald-200",
+          icon: CheckCircle2,
+          label: "Tersedia",
+        };
       case "verifikasi":
-        return "bg-yellow-100 text-yellow-800";
+        return {
+          color: "bg-amber-100 text-amber-800",
+          bgColor: "bg-amber-50",
+          textColor: "text-amber-600",
+          borderColor: "border-amber-200",
+          icon: Clock,
+          label: "Verifikasi",
+        };
       case "returned":
-        return "bg-gray-100 text-gray-800";
+        return {
+          color: "bg-blue-100 text-blue-800",
+          bgColor: "bg-blue-50",
+          textColor: "text-blue-600",
+          borderColor: "border-blue-200",
+          icon: AlertCircle,
+          label: "Returned",
+        };
       default:
-        return "bg-gray-100 text-gray-800";
+        return {
+          color: "bg-gray-100 text-gray-800",
+          bgColor: "bg-gray-50",
+          textColor: "text-gray-600",
+          borderColor: "border-gray-200",
+          icon: AlertCircle,
+          label: status,
+        };
     }
   };
 
   if (loading) {
     return (
-      <div className="p-8">
-        <div className="text-center text-gray-600">
-          Memuat...
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+        <div className="text-center">
+          <Loader
+            className="animate-spin mx-auto mb-4 text-blue-500"
+            size={32}
+          />
+          <p className="text-gray-600 font-medium">Memuat data...</p>
           <div className="mt-4 text-xs text-gray-500">
             authLoading: {authLoading.toString()} | user: {user ? "yes" : "no"}{" "}
             | role: {profile?.role || "none"}
@@ -170,24 +211,26 @@ export default function AdminLostFound() {
 
   return (
     <>
-      <div className="p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Kelola Lost & Found
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 font-medium">
             Verifikasi dan kelola barang hilang & ditemukan
           </p>
         </div>
 
         {items.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-md p-12 text-center">
-            <p className="text-gray-500">Belum ada barang yang di-upload</p>
+          <div className="bg-white rounded-xl shadow-xl p-12 text-center border border-gray-100">
+            <p className="text-gray-500 font-medium">
+              Belum ada barang yang di-upload
+            </p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                     Foto
@@ -214,7 +257,10 @@ export default function AdminLostFound() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {items.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
+                  <tr
+                    key={item.id}
+                    className="hover:bg-blue-50/50 transition-colors"
+                  >
                     <td className="px-6 py-4">
                       {item.foto_url ? (
                         <Image
@@ -223,10 +269,10 @@ export default function AdminLostFound() {
                           width={64}
                           height={64}
                           unoptimized
-                          className="w-16 h-16 object-cover rounded-lg"
+                          className="w-16 h-16 object-cover rounded-xl shadow-md"
                         />
                       ) : (
-                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center shadow-md">
                           <ImageIcon className="text-gray-400" size={24} />
                         </div>
                       )}
@@ -246,13 +292,18 @@ export default function AdminLostFound() {
                       {item.profiles?.name || "Unknown"}
                     </td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          item.status
-                        )}`}
-                      >
-                        {item.status}
-                      </span>
+                      {(() => {
+                        const statusInfo = getStatusColor(item.status);
+                        const StatusIcon = statusInfo.icon;
+                        return (
+                          <span
+                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}
+                          >
+                            <StatusIcon size={16} />
+                            {statusInfo.label}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
@@ -313,7 +364,7 @@ export default function AdminLostFound() {
                           )
                         }
                         disabled={updatingId === item.id}
-                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                        className="px-3 py-2 border-2 border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 hover:border-gray-400 transition-colors"
                       >
                         <option value="tersedia">Tersedia</option>
                         <option value="verifikasi">Verifikasi</option>
@@ -345,12 +396,10 @@ export default function AdminLostFound() {
                 .order("created_at", { ascending: false });
 
             if (!lostFoundError && lostFoundData) {
-              // Get user IDs
               const userIds = [
                 ...new Set(lostFoundData.map((item) => item.user_id)),
               ];
 
-              // Query profiles for uploaders
               const { data: profilesData, error: profilesError } =
                 await supabase
                   .from("profiles")
@@ -358,14 +407,12 @@ export default function AdminLostFound() {
                   .in("id", userIds);
 
               if (profilesError) {
-                // Still show items without profile names
                 const itemsWithoutProfiles = lostFoundData.map((item) => ({
                   ...item,
                   profiles: { name: "Unknown" },
                 })) as LostFoundWithProfile[];
                 setItems(itemsWithoutProfiles);
               } else {
-                // Map profiles to items
                 const profileMap = new Map(
                   profilesData?.map((p) => [p.id, p]) || []
                 );

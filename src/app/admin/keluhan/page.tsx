@@ -2,9 +2,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { Image as ImageIcon } from "lucide-react";
+import {
+  Image as ImageIcon,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
+  Filter,
+} from "lucide-react";
 import Image from "next/image";
-import Navbar from "@/components/layout/Navbar";
 import { supabase, Keluhan } from "../../../lib/supabase";
 
 type KeluhanWithProfile = Keluhan & {
@@ -91,145 +96,204 @@ export default function AdminKeluhan() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "menunggu":
-        return "bg-yellow-100 text-yellow-800";
+        return {
+          color: "bg-amber-100 text-amber-800",
+          bgColor: "bg-amber-50",
+          textColor: "text-amber-700",
+          borderColor: "border-amber-200",
+          icon: Clock,
+          label: "Menunggu",
+        };
       case "diproses":
-        return "bg-blue-100 text-blue-800";
+        return {
+          color: "bg-blue-100 text-blue-800",
+          bgColor: "bg-blue-50",
+          textColor: "text-blue-700",
+          borderColor: "border-blue-200",
+          icon: AlertCircle,
+          label: "Sedang Diproses",
+        };
       case "selesai":
-        return "bg-green-100 text-green-800";
+        return {
+          color: "bg-emerald-100 text-emerald-800",
+          bgColor: "bg-emerald-50",
+          textColor: "text-emerald-700",
+          borderColor: "border-emerald-200",
+          icon: CheckCircle2,
+          label: "Selesai",
+        };
       default:
-        return "bg-gray-100 text-gray-800";
+        return {
+          color: "bg-gray-100 text-gray-800",
+          bgColor: "bg-gray-50",
+          textColor: "text-gray-700",
+          borderColor: "border-gray-200",
+          icon: AlertCircle,
+          label: status,
+        };
     }
   };
 
   if (loading) {
     return (
-      <div className="p-8">
-        <div className="text-center text-gray-600">Memuat...</div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-lg p-8">
+          <div className="animate-spin h-8 w-8 border-4 border-blue-200 border-t-blue-600 rounded-full"></div>
+          <p className="text-center text-gray-600 mt-4">
+            Memuat data keluhan...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <>
-      <div className="p-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Kelola Keluhan
-          </h1>
-          <p className="text-gray-600">
-            Pantau dan update status keluhan dari mahasiswa
-          </p>
-        </div>
-
-        <div className="mb-6 flex gap-3">
-          {["semua", "menunggu", "diproses", "selesai"].map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status as typeof filter)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                filter === status
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {keluhan.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-md p-12 text-center">
-            <p className="text-gray-500">Tidak ada keluhan dengan filter ini</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Kelola Keluhan
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Pantau dan update status keluhan dari mahasiswa
+            </p>
           </div>
-        ) : (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Foto
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Judul
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Pelapor
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Lokasi
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {keluhan.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      {item.foto_url ? (
-                        <Image
-                          src={item.foto_url}
-                          alt={item.judul}
-                          width={64}
-                          height={64}
-                          unoptimized
-                          className="w-16 h-16 object-cover rounded-lg"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <ImageIcon className="text-gray-400" size={24} />
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="font-medium text-gray-900">{item.judul}</p>
-                      <p className="text-sm text-gray-600">{item.kategori}</p>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">
-                      {item.profiles?.name || "Unknown"}
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">{item.lokasi}</td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          item.status
-                        )}`}
-                      >
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="relative">
-                        <select
-                          value={item.status}
-                          onChange={(e) =>
-                            updateStatus(
-                              item.id,
-                              e.target.value as
-                                | "menunggu"
-                                | "diproses"
-                                | "selesai"
-                            )
-                          }
-                          disabled={updatingId === item.id}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+
+          {/* Filter Buttons */}
+          <div className="mb-8 flex flex-wrap gap-3">
+            {["semua", "menunggu", "diproses", "selesai"].map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status as typeof filter)}
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+                  filter === status
+                    ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-200"
+                    : "bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+                }`}
+              >
+                <Filter size={18} />
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* Content */}
+          {keluhan.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-gray-400" />
+              </div>
+              <p className="text-gray-500 text-lg">
+                Tidak ada keluhan dengan filter ini
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b-2 border-gray-100">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Foto
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Judul
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Pelapor
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Lokasi
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Status
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                        Aksi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {keluhan.map((item) => {
+                      const statusInfo = getStatusColor(item.status);
+                      const StatusIcon = statusInfo.icon;
+                      return (
+                        <tr
+                          key={item.id}
+                          className="hover:bg-blue-50/50 transition-colors"
                         >
-                          <option value="menunggu">Menunggu</option>
-                          <option value="diproses">Diproses</option>
-                          <option value="selesai">Selesai</option>
-                        </select>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                          <td className="px-6 py-4">
+                            {item.foto_url ? (
+                              <Image
+                                src={item.foto_url}
+                                alt={item.judul}
+                                width={64}
+                                height={64}
+                                unoptimized
+                                className="w-16 h-16 object-cover rounded-xl"
+                              />
+                            ) : (
+                              <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center">
+                                <ImageIcon
+                                  className="text-gray-400"
+                                  size={24}
+                                />
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="font-semibold text-gray-900">
+                              {item.judul}
+                            </p>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {item.kategori}
+                            </p>
+                          </td>
+                          <td className="px-6 py-4 text-gray-600">
+                            {item.profiles?.name || "Unknown"}
+                          </td>
+                          <td className="px-6 py-4 text-gray-600">
+                            {item.lokasi}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div
+                              className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium ${statusInfo.color}`}
+                            >
+                              <StatusIcon size={16} />
+                              {statusInfo.label}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <select
+                              value={item.status}
+                              onChange={(e) =>
+                                updateStatus(
+                                  item.id,
+                                  e.target.value as
+                                    | "menunggu"
+                                    | "diproses"
+                                    | "selesai"
+                                )
+                              }
+                              disabled={updatingId === item.id}
+                              className="px-4 py-2 border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:border-blue-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            >
+                              <option value="menunggu">Menunggu</option>
+                              <option value="diproses">Diproses</option>
+                              <option value="selesai">Selesai</option>
+                            </select>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
