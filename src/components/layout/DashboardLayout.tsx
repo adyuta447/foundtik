@@ -9,7 +9,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="max-w-7xl mx-auto p-8">{children}</main>
+      <main className="max-w-8xl mx-auto p-4">{children}</main>
     </div>
   );
 }

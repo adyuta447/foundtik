@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
+import Image from "next/image";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -54,9 +55,14 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">SmartCampus</h1>
-          <p className="text-gray-600">Masuk ke akun Anda</p>
+        <div className="flex flex-col justify-center items-center gap-2 mb-8">
+          <Image
+            src="/foundtik.png"
+            width={200}
+            height={100}
+            alt="FoundTIK Logo"
+          />
+          <p className="text-gray-600 text-center">Masuk ke akun Anda</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">

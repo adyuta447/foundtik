@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { ArrowLeft, Calendar, MapPin, Tag } from "lucide-react";
 import Image from "next/image";
 import { supabase, Keluhan } from "../../lib/supabase";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export default function KeluhanDetail() {
+function KeluhanDetailContent() {
   const searchParams = useSearchParams();
   const id = searchParams?.get("id") || "";
   const router = useRouter();
@@ -165,5 +165,15 @@ export default function KeluhanDetail() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function KeluhanDetail() {
+  return (
+    <Suspense
+      fallback={<div className="p-8 text-center text-gray-600">Memuat...</div>}
+    >
+      <KeluhanDetailContent />
+    </Suspense>
   );
 }

@@ -27,10 +27,29 @@ export default function LostFoundList() {
   };
 
   useEffect(() => {
-    loadData();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("lost_found")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && isMounted) {
+        setItems(data);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
-  // Filter items berdasarkan search query
   const filtered = items.filter((item) => {
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase();
@@ -85,7 +104,6 @@ export default function LostFoundList() {
           </button>
         </div>
 
-        {/* Search Box */}
         <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-3 text-gray-400" size={20} />

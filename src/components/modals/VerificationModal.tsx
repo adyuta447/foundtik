@@ -22,8 +22,6 @@ export default function VerificationModal({
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  // Reset form when modal closes
   const handleClose = () => {
     setVerificationStatus("verified");
     setNotes("");

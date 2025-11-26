@@ -37,7 +37,7 @@ export function Sidebar() {
   return (
     <div className="h-screen w-64 bg-slate-900 text-white flex flex-col">
       <div className="p-6 border-b border-slate-700">
-        <h1 className="text-2xl font-bold">SmartCampus</h1>
+        <h1 className="text-2xl font-bold">FoundTIK</h1>
         <p className="text-sm text-slate-400 mt-1">{profile?.name}</p>
         <span className="inline-block mt-2 px-2 py-1 bg-slate-700 text-xs rounded-full">
           {profile?.role}

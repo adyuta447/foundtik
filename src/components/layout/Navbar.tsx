@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Power, Menu, X } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Navbar() {
   const { profile, signOut } = useAuth();
@@ -35,12 +36,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link
-              href={pathForRole("/dashboard")}
-              className="text-xl font-bold text-blue-600"
-            >
-              FoundTIK
-            </Link>
+            <Image
+              src={"/foundtik.png"}
+              width={150}
+              height={80}
+              alt="FoundTIK Logo"
+            />
           </div>
 
           {/* Desktop */}
@@ -69,7 +70,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href={pathForRole("/lost-found")}
+              href={pathForRole("/lost-found-list")}
               className={`px-4 py-2 rounded-lg font-medium transition ${
                 isActive(pathForRole("/lost-found")) ||
                 isActive(pathForRole("/lost-found-list"))

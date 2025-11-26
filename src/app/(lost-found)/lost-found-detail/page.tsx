@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { ArrowLeft, Calendar, MapPin, User as UserIcon } from "lucide-react";
 import Image from "next/image";
 import { supabase, LostFound, Profile } from "../../../lib/supabase";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export default function LostFoundDetail() {
+function LostFoundDetailContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const id = searchParams?.get("id") || "";
@@ -249,5 +249,15 @@ export default function LostFoundDetail() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LostFoundDetail() {
+  return (
+    <Suspense
+      fallback={<div className="p-8 text-center text-gray-600">Memuat...</div>}
+    >
+      <LostFoundDetailContent />
+    </Suspense>
   );
 }

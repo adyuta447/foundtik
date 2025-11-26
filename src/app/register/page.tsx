@@ -20,7 +20,6 @@ export default function Register() {
     setError("");
 
     try {
-      // Check if environment variables are loaded
       if (
         !process.env.NEXT_PUBLIC_SUPABASE_URL ||
         !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -78,7 +77,7 @@ export default function Register() {
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Daftar Akun</h1>
-          <p className="text-gray-600">Buat akun SmartCampus baru</p>
+          <p className="text-gray-600">Buat akun FoundTIK baru</p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-5">

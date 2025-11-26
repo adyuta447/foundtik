@@ -46,31 +46,25 @@ export default function Dashboard() {
           .from("keluhan")
           .select("*", { count: "exact", head: true })
           .eq("user_id", user.id);
-
         const { count: keluhanMenunggu } = await supabase
           .from("keluhan")
           .select("*", { count: "exact", head: true })
           .eq("user_id", user.id)
           .eq("status", "menunggu");
-
         const { count: keluhanDiproses } = await supabase
           .from("keluhan")
           .select("*", { count: "exact", head: true })
           .eq("user_id", user.id)
           .eq("status", "diproses");
-
         const { count: keluhanSelesai } = await supabase
           .from("keluhan")
           .select("*", { count: "exact", head: true })
           .eq("user_id", user.id)
           .eq("status", "selesai");
-
         const { count: totalLostFound } = await supabase
           .from("lost_found")
           .select("*", { count: "exact", head: true })
           .eq("user_id", user.id);
-
-        // Fetch recent reports
         const { data: reportsData } = await supabase
           .from("keluhan")
           .select("id, title, status, created_at")
@@ -161,7 +155,6 @@ export default function Dashboard() {
 
   return (
     <div className="p-8">
-      {/* --- Header --- */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Dashboard</h1>
         <p className="text-muted-foreground">
@@ -169,9 +162,8 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* --- Welcome Banner --- */}
       {profile && showWelcome && (
-        <Card className="mb-6 bg-blue-50 border-blue-100 flex items-center justify-between p-4">
+        <Card className="mb-6 bg-blue-50 border-blue-100 flex flex-col md:flex-row items-center justify-between p-4 gap-4">
           <div>
             <h3 className="text-lg font-semibold">
               {profile.name}, selamat datang!
@@ -197,54 +189,52 @@ export default function Dashboard() {
           </div>
         </Card>
       )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {statCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div
+              key={card.title}
+              className="flex items-center justify-between bg-white border border-gray-200 
+        rounded-2xl px-6 py-5 shadow-sm transition hover:shadow-md cursor-pointer"
+            >
+              <div className="flex flex-col">
+                <span className="text-[15px] font-medium text-gray-600">
+                  {card.title}
+                </span>
+                <span className="text-[32px] font-bold text-gray-900 leading-none mt-2">
+                  {card.value}
+                </span>
+              </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {loadingStats
-          ? Array(4)
-              .fill(0)
-              .map((_, i) => (
-                <Skeleton key={i} className="h-32 w-full rounded-xl" />
-              ))
-          : statCards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <Card key={card.title} className="border-gray-200">
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600">
-                      {card.title}
-                    </CardTitle>
-                    <div className={`${card.color} p-3 rounded-lg`}>
-                      <Icon className={`${card.iconColor} w-6 h-6`} />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-3xl font-bold text-gray-900">
-                      {card.value}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+              <div
+                className={`flex items-center justify-center w-14 h-14 rounded-xl ${card.color}`}
+              >
+                <Icon className={`w-7 h-7 ${card.iconColor}`} />
+              </div>
+            </div>
+          );
+        })}
       </div>
-
-      {/* --- Two Column Section --- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Status Breakdown */}
         <Card className="border-gray-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span>Status Keluhan</span>
-            </CardTitle>
+            <CardTitle>Status Keluhan</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {statusData.map((status) => (
               <div
                 key={status.label}
-                className={`${status.bg} rounded-lg p-4 flex items-center justify-between`}
+                className={`${status.bg} rounded-lg p-4 flex justify-between items-center`}
               >
-                <span className="text-sm font-medium text-gray-700">
-                  {status.label}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`w-3 h-3 rounded-full ${status.textColor}`}
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    {status.label}
+                  </span>
+                </div>
                 <span className={`text-lg font-bold ${status.textColor}`}>
                   {status.value}
                 </span>
@@ -252,13 +242,9 @@ export default function Dashboard() {
             ))}
           </CardContent>
         </Card>
-
-        {/* Recent Activity */}
         <Card className="border-gray-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span>Aktivitas Terbaru</span>
-            </CardTitle>
+            <CardTitle>Aktivitas Terbaru</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {loadingStats ? (
