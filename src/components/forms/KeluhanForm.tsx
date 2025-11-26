@@ -76,7 +76,6 @@ export default function KeluhanForm({ onClose }: { onClose: () => void }) {
 
     setLoading(false);
     onClose();
-    // optionally refresh or navigate
     router.refresh();
   };
 
