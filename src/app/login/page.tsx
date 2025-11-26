@@ -62,7 +62,10 @@ export default function Login() {
             height={100}
             alt="FoundTIK Logo"
           />
-          <p className="text-gray-600 text-center">Masuk ke akun Anda</p>
+          <p className="text-gray-600 text-center">
+            Masuk ke akun Anda untuk mencari/menemukan barang hilang atau
+            keluhan fasilitas
+          </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
