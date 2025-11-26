@@ -1,6 +1,15 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
-import { ArrowLeft, Calendar, MapPin, User as UserIcon } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  MapPin,
+  User as UserIcon,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+  Tag,
+} from "lucide-react";
 import Image from "next/image";
 import { supabase, LostFound, Profile } from "../../../lib/supabase";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -69,19 +78,41 @@ function LostFoundDetailContent() {
   const getStatusInfo = (status: string) => {
     switch (status) {
       case "tersedia":
-        return { color: "bg-green-100 text-green-800", label: "Tersedia" };
+        return {
+          color: "bg-emerald-500",
+          bgColor: "bg-emerald-50",
+          textColor: "text-emerald-700",
+          borderColor: "border-emerald-200",
+          icon: CheckCircle2,
+          label: "Tersedia",
+        };
       case "verifikasi":
         return {
-          color: "bg-yellow-100 text-yellow-800",
+          color: "bg-amber-500",
+          bgColor: "bg-amber-50",
+          textColor: "text-amber-700",
+          borderColor: "border-amber-200",
+          icon: Clock,
           label: "Dalam Verifikasi",
         };
       case "returned":
         return {
-          color: "bg-gray-100 text-gray-800",
+          color: "bg-blue-500",
+          bgColor: "bg-blue-50",
+          textColor: "text-blue-700",
+          borderColor: "border-blue-200",
+          icon: AlertCircle,
           label: "Sudah Dikembalikan",
         };
       default:
-        return { color: "bg-gray-100 text-gray-800", label: status };
+        return {
+          color: "bg-gray-500",
+          bgColor: "bg-gray-50",
+          textColor: "text-gray-700",
+          borderColor: "border-gray-200",
+          icon: AlertCircle,
+          label: status,
+        };
     }
   };
 

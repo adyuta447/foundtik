@@ -14,13 +14,12 @@ export default function Navbar() {
 
   const pathForRole = (path: string) => {
     if (profile?.role === "admin") {
-      // For admin, map user routes to admin routes
-      if (path === "/keluhan" || path === "/keluhan-list")
-        return "/admin/keluhan";
-      if (path === "/lost-found" || path === "/lost-found-list")
-        return "/admin/lost-found";
+      // For admin, map list routes to clean admin routes
+      if (path === "/keluhan-list") return "/admin/keluhan";
+      if (path === "/lost-found-list") return "/admin/lost-found";
       return `/admin${path}`;
     }
+    // User: use original paths
     return path;
   };
 
@@ -59,9 +58,9 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href={pathForRole("/keluhan")}
+              href={pathForRole("/keluhan-list")}
               className={`px-4 py-2 rounded-lg font-medium transition ${
-                isActive("/keluhan") || isActive("/admin/keluhan")
+                isActive("/keluhan")
                   ? "bg-blue-50 text-blue-600"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
@@ -70,9 +69,9 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href={pathForRole("/lost-found")}
+              href={pathForRole("/lost-found-list")}
               className={`px-4 py-2 rounded-lg font-medium transition ${
-                isActive("/lost-found") || isActive("/admin/lost-found")
+                isActive("/lost-found")
                   ? "bg-blue-50 text-blue-600"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
@@ -126,10 +125,10 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href={pathForRole("/keluhan")}
+              href={pathForRole("/keluhan-list")}
               onClick={() => setMobileMenuOpen(false)}
               className={`w-full block px-4 py-2 rounded-lg font-medium transition ${
-                isActive("/keluhan") || isActive("/admin/keluhan")
+                isActive("/keluhan")
                   ? "bg-blue-50 text-blue-600"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
@@ -138,10 +137,10 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href={pathForRole("/lost-found")}
+              href={pathForRole("/lost-found-list")}
               onClick={() => setMobileMenuOpen(false)}
               className={`w-full block px-4 py-2 rounded-lg font-medium transition ${
-                isActive("/lost-found") || isActive("/admin/lost-found")
+                isActive("/lost-found")
                   ? "bg-blue-50 text-blue-600"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
