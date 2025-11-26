@@ -331,40 +331,43 @@ function LostFoundDetailContent() {
                       placeholder="Jelaskan ciri-ciri khusus barang atau bukti kepemilikan..."
                       required
                     />
-                </div>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Link Bukti (Opsional)
-                  </label>
-                  <input
-                    type="url"
-                    value={claimData.bukti_url}
-                    onChange={(e) =>
-                      setClaimData({ ...claimData, bukti_url: e.target.value })
-                    }
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://..."
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Link Bukti (Opsional)
+                    </label>
+                    <input
+                      type="url"
+                      value={claimData.bukti_url}
+                      onChange={(e) =>
+                        setClaimData({
+                          ...claimData,
+                          bukti_url: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="https://..."
+                    />
+                  </div>
 
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowClaimForm(false)}
-                    className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400"
-                  >
-                    {submitting ? "Mengirim..." : "Kirim Klaim"}
-                  </button>
-                </div>
-              </form>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setShowClaimForm(false)}
+                      className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+                    >
+                      {submitting ? "Mengirim..." : "Kirim Klaim"}
+                    </button>
+                  </div>
+                </form>
               </div>
             )}
           </div>
