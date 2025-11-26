@@ -1,0 +1,385 @@
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { Image as ImageIcon, CheckCircle, XCircle } from "lucide-react";
+import { supabase, LostFound } from "@/lib/supabase";
+import Image from "next/image";
+import VerificationModal from "@/components/modals/VerificationModal";
+
+type LostFoundWithProfile = LostFound & {
+  profiles: { name: string } | null;
+};
+
+export default function AdminLostFound() {
+  const router = useRouter();
+  const { user, profile, loading: authLoading } = useAuth();
+  const [items, setItems] = useState<LostFoundWithProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<LostFound | null>(null);
+  const [verificationOpen, setVerificationOpen] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      // Wait for auth to load
+      if (authLoading) return;
+
+      // Check if user is admin
+      if (!user || profile?.role !== "admin") {
+        console.log("Not admin access blocked:", {
+          user: user?.id,
+          role: profile?.role,
+        });
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+
+      const { data: lostFoundData, error: lostFoundError } = await supabase
+        .from("lost_found")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (lostFoundError) {
+        console.error("Error loading lost_found:", lostFoundError);
+        setLoading(false);
+        return;
+      }
+
+      if (lostFoundData && lostFoundData.length > 0) {
+        // Get user IDs
+        const userIds = [...new Set(lostFoundData.map((item) => item.user_id))];
+
+        // Query profiles for uploaders
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("profiles")
+          .select("id, name")
+          .in("id", userIds);
+
+        if (profilesError) {
+          console.error("Error loading profiles:", profilesError);
+          const itemsWithoutProfiles = lostFoundData.map((item) => ({
+            ...item,
+            profiles: { name: "Unknown" },
+          })) as LostFoundWithProfile[];
+          setItems(itemsWithoutProfiles);
+        } else {
+          const profileMap = new Map(profilesData?.map((p) => [p.id, p]) || []);
+          const itemsWithProfiles = lostFoundData.map((item) => ({
+            ...item,
+            profiles: profileMap.get(item.user_id) || { name: "Unknown" },
+          })) as LostFoundWithProfile[];
+          setItems(itemsWithProfiles);
+        }
+      } else {
+        setItems([]);
+      }
+
+      setLoading(false);
+    };
+    loadData();
+  }, [profile, user, authLoading]);
+
+  const updateStatus = async (
+    id: string,
+    newStatus: "tersedia" | "verifikasi" | "returned"
+  ) => {
+    setUpdatingId(id);
+
+    const { error } = await supabase
+      .from("lost_found")
+      .update({ status: newStatus })
+      .eq("id", id);
+
+    if (!error) {
+      // Reload data
+      const { data: lostFoundData, error: lostFoundError } = await supabase
+        .from("lost_found")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!lostFoundError && lostFoundData) {
+        // Get user IDs
+        const userIds = [...new Set(lostFoundData.map((item) => item.user_id))];
+
+        // Query profiles for uploaders
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("profiles")
+          .select("id, name")
+          .in("id", userIds);
+
+        if (profilesError) {
+          // Still show items without profile names
+          const itemsWithoutProfiles = lostFoundData.map((item) => ({
+            ...item,
+            profiles: { name: "Unknown" },
+          })) as LostFoundWithProfile[];
+          setItems(itemsWithoutProfiles);
+        } else {
+          // Map profiles to items
+          const profileMap = new Map(profilesData?.map((p) => [p.id, p]) || []);
+          const itemsWithProfiles = lostFoundData.map((item) => ({
+            ...item,
+            profiles: profileMap.get(item.user_id) || { name: "Unknown" },
+          })) as LostFoundWithProfile[];
+          setItems(itemsWithProfiles);
+        }
+      }
+    }
+
+    setUpdatingId(null);
+  };
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/");
+    }
+    if (!authLoading && user && profile && profile.role !== "admin") {
+      router.push("/");
+    }
+  }, [user, profile, authLoading, router]);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "tersedia":
+        return "bg-green-100 text-green-800";
+      case "verifikasi":
+        return "bg-yellow-100 text-yellow-800";
+      case "returned":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        <div className="text-center text-gray-600">
+          Memuat...
+          <div className="mt-4 text-xs text-gray-500">
+            authLoading: {authLoading.toString()} | user: {user ? "yes" : "no"}{" "}
+            | role: {profile?.role || "none"}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="p-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Kelola Lost & Found
+          </h1>
+          <p className="text-gray-600">
+            Verifikasi dan kelola barang hilang & ditemukan
+          </p>
+        </div>
+
+        {items.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-md p-12 text-center">
+            <p className="text-gray-500">Belum ada barang yang di-upload</p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Foto
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Nama Barang
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Lokasi
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Uploader
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Verifikasi
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {items.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      {item.foto_url ? (
+                        <Image
+                          src={item.foto_url}
+                          alt={item.nama_barang}
+                          width={64}
+                          height={64}
+                          unoptimized
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <ImageIcon className="text-gray-400" size={24} />
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="font-medium text-gray-900">
+                        {item.nama_barang}
+                      </p>
+                      <p className="text-sm text-gray-600 line-clamp-1">
+                        {item.deskripsi}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">
+                      {item.lokasi_ditemukan}
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">
+                      {item.profiles?.name || "Unknown"}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          item.status
+                        )}`}
+                      >
+                        {item.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        {item.verifikasi_status ? (
+                          <>
+                            {item.verifikasi_status === "verified" ? (
+                              <>
+                                <CheckCircle
+                                  className="text-green-600"
+                                  size={18}
+                                />
+                                <span className="text-xs font-medium text-green-600">
+                                  Terverifikasi
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <XCircle className="text-red-600" size={18} />
+                                <span className="text-xs font-medium text-red-600">
+                                  Ditolak
+                                </span>
+                              </>
+                            )}
+                            <button
+                              onClick={() => {
+                                setSelectedItem(item);
+                                setVerificationOpen(true);
+                              }}
+                              className="ml-auto px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs hover:bg-gray-200 transition-colors"
+                              title="Edit verifikasi"
+                            >
+                              Edit
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setSelectedItem(item);
+                              setVerificationOpen(true);
+                            }}
+                            className="w-full px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-medium hover:bg-blue-200 transition-colors"
+                          >
+                            Verifikasi
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={item.status}
+                        onChange={(e) =>
+                          updateStatus(
+                            item.id,
+                            e.target.value as
+                              | "tersedia"
+                              | "verifikasi"
+                              | "returned"
+                          )
+                        }
+                        disabled={updatingId === item.id}
+                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      >
+                        <option value="tersedia">Tersedia</option>
+                        <option value="verifikasi">Verifikasi</option>
+                        <option value="returned">Returned</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <VerificationModal
+        item={selectedItem}
+        isOpen={verificationOpen}
+        onClose={() => {
+          setVerificationOpen(false);
+          setSelectedItem(null);
+        }}
+        onVerified={() => {
+          // Reload data
+          const loadData = async () => {
+            const { data: lostFoundData, error: lostFoundError } =
+              await supabase
+                .from("lost_found")
+                .select("*")
+                .order("created_at", { ascending: false });
+
+            if (!lostFoundError && lostFoundData) {
+              // Get user IDs
+              const userIds = [
+                ...new Set(lostFoundData.map((item) => item.user_id)),
+              ];
+
+              // Query profiles for uploaders
+              const { data: profilesData, error: profilesError } =
+                await supabase
+                  .from("profiles")
+                  .select("id, name")
+                  .in("id", userIds);
+
+              if (profilesError) {
+                // Still show items without profile names
+                const itemsWithoutProfiles = lostFoundData.map((item) => ({
+                  ...item,
+                  profiles: { name: "Unknown" },
+                })) as LostFoundWithProfile[];
+                setItems(itemsWithoutProfiles);
+              } else {
+                // Map profiles to items
+                const profileMap = new Map(
+                  profilesData?.map((p) => [p.id, p]) || []
+                );
+                const itemsWithProfiles = lostFoundData.map((item) => ({
+                  ...item,
+                  profiles: profileMap.get(item.user_id) || { name: "Unknown" },
+                })) as LostFoundWithProfile[];
+                setItems(itemsWithProfiles);
+              }
+            }
+          };
+          loadData();
+        }}
+      />
+    </>
+  );
+}
