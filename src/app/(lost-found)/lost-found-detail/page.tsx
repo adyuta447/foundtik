@@ -118,129 +118,219 @@ function LostFoundDetailContent() {
 
   if (loading) {
     return (
-      <div className="p-8">
-        <div className="text-center text-gray-600">Memuat...</div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+              <div
+                className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0.1s" }}
+              ></div>
+              <div
+                className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"
+                style={{ animationDelay: "0.2s" }}
+              ></div>
+            </div>
+            <p className="text-center text-gray-600 mt-4">
+              Memuat detail barang...
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!item) {
     return (
-      <div className="p-8">
-        <div className="text-center text-gray-600">Barang tidak ditemukan</div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Barang Tidak Ditemukan
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Data barang hilang/ditemukan yang Anda cari tidak tersedia
+            </p>
+            <button
+              onClick={() => router.push("/(lost-found)/lost-found-list")}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+            >
+              <ArrowLeft size={20} />
+              Kembali ke Daftar
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
   const statusInfo = getStatusInfo(item.status);
+  const StatusIcon = statusInfo.icon;
 
   return (
-    <div className="p-8">
-      <button
-        onClick={() => router.push("/lost-found-list")}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
-      >
-        <ArrowLeft size={20} />
-        Kembali
-      </button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-5xl mx-auto">
+        <button
+          onClick={() => router.push("/(lost-found)/lost-found-list")}
+          className="group inline-flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-6 px-4 py-2 rounded-xl hover:bg-white/60 transition-all"
+        >
+          <ArrowLeft
+            size={20}
+            className="group-hover:-translate-x-1 transition-transform"
+          />
+          <span className="font-medium">Kembali</span>
+        </button>
 
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
-        {item.foto_url && (
-          <div className="relative w-full h-96 bg-gray-100">
-            <Image
-              src={item.foto_url}
-              alt={item.nama_barang}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-        )}
+        {/* Main Card */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          {/* Image Section */}
+          {item.foto_url && (
+            <div className="relative w-full h-64 sm:h-80 lg:h-96 bg-gradient-to-br from-gray-100 to-gray-200">
+              <Image
+                src={item.foto_url}
+                alt={item.nama_barang}
+                fill
+                unoptimized
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+            </div>
+          )}
 
-        <div className="p-8">
-          <div className="flex items-start justify-between mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {item.nama_barang}
-            </h1>
-            <span
-              className={`px-4 py-2 rounded-full text-sm font-medium ${statusInfo.color}`}
-            >
-              {statusInfo.label}
-            </span>
-          </div>
+          {/* Content Section */}
+          <div className="p-6 sm:p-8 lg:p-10">
+            {/* Title & Status Badge */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+                {item.nama_barang}
+              </h1>
+              <span
+                className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold ${statusInfo.bgColor} ${statusInfo.textColor} border ${statusInfo.borderColor} shadow-sm whitespace-nowrap`}
+              >
+                <StatusIcon size={18} />
+                {statusInfo.label}
+              </span>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="flex items-start gap-3">
-              <MapPin className="text-gray-400 mt-1" size={20} />
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Lokasi Ditemukan</p>
-                <p className="font-medium text-gray-900">
-                  {item.lokasi_ditemukan}
-                </p>
+            {/* Info Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              <div className="group bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-5 border border-purple-200 hover:shadow-md transition-all">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-purple-200 rounded-lg group-hover:scale-110 transition-transform">
+                    <Tag className="text-purple-700" size={20} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-purple-600 mb-1 uppercase tracking-wide">
+                      Jenis Barang
+                    </p>
+                    <p className="font-semibold text-gray-900 truncate">
+                      {item.nama_barang}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group bg-gradient-to-br from-rose-50 to-rose-100/50 rounded-xl p-5 border border-rose-200 hover:shadow-md transition-all">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-rose-200 rounded-lg group-hover:scale-110 transition-transform">
+                    <MapPin className="text-rose-700" size={20} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-rose-600 mb-1 uppercase tracking-wide">
+                      Lokasi Ditemukan
+                    </p>
+                    <p className="font-semibold text-gray-900 truncate">
+                      {item.lokasi_ditemukan}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group bg-gradient-to-br from-sky-50 to-sky-100/50 rounded-xl p-5 border border-sky-200 hover:shadow-md transition-all sm:col-span-2 lg:col-span-1">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-sky-200 rounded-lg group-hover:scale-110 transition-transform">
+                    <Calendar className="text-sky-700" size={20} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-sky-600 mb-1 uppercase tracking-wide">
+                      Tanggal Ditemukan
+                    </p>
+                    <p className="font-semibold text-gray-900">
+                      {new Date(item.created_at).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <Calendar className="text-gray-400 mt-1" size={20} />
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Tanggal Ditemukan</p>
-                <p className="font-medium text-gray-900">
-                  {new Date(item.created_at).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-              </div>
+            {/* Description Section */}
+            <div className="bg-gray-50 rounded-xl p-6 sm:p-8 mb-8 border border-gray-200">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="w-1 h-6 bg-blue-600 rounded-full"></div>
+                Deskripsi Barang
+              </h2>
+              <p className="text-gray-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap">
+                {item.deskripsi}
+              </p>
             </div>
 
+            {/* Uploader Info */}
             {uploader && (
-              <div className="flex items-start gap-3">
-                <UserIcon className="text-gray-400 mt-1" size={20} />
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Penemu</p>
-                  <p className="font-medium text-gray-900">{uploader.name}</p>
+              <div className="bg-blue-50 rounded-xl p-6 mb-8 border border-blue-200">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-blue-200 rounded-lg">
+                    <UserIcon className="text-blue-700" size={24} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-blue-600 mb-1 uppercase tracking-wide">
+                      Penemu Barang
+                    </p>
+                    <p className="font-semibold text-gray-900">
+                      {uploader.name}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
-          </div>
 
-          <div className="border-t border-gray-200 pt-6 mb-8">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">
-              Deskripsi
-            </h2>
-            <p className="text-gray-700 leading-relaxed">{item.deskripsi}</p>
-          </div>
+            {/* Claim Form */}
+            {item.status === "tersedia" && !showClaimForm && (
+              <button
+                onClick={() => setShowClaimForm(true)}
+                className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors"
+              >
+                Ajukan Klaim Barang
+              </button>
+            )}
 
-          {item.status === "tersedia" && !showClaimForm && (
-            <button
-              onClick={() => setShowClaimForm(true)}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              Ajukan Klaim Barang
-            </button>
-          )}
-
-          {showClaimForm && (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Form Klaim Barang
-              </h3>
-              <form onSubmit={handleClaim} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Kenapa Anda yakin ini barang Anda?
-                  </label>
-                  <textarea
-                    value={claimData.pesan}
-                    onChange={(e) =>
-                      setClaimData({ ...claimData, pesan: e.target.value })
-                    }
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    rows={4}
-                    placeholder="Jelaskan ciri-ciri khusus barang atau bukti kepemilikan..."
-                    required
-                  />
+            {showClaimForm && (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 sm:p-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Form Klaim Barang
+                </h3>
+                <form onSubmit={handleClaim} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Kenapa Anda yakin ini barang Anda?
+                    </label>
+                    <textarea
+                      value={claimData.pesan}
+                      onChange={(e) =>
+                        setClaimData({ ...claimData, pesan: e.target.value })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      rows={4}
+                      placeholder="Jelaskan ciri-ciri khusus barang atau bukti kepemilikan..."
+                      required
+                    />
                 </div>
 
                 <div>
@@ -275,8 +365,9 @@ function LostFoundDetailContent() {
                   </button>
                 </div>
               </form>
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
