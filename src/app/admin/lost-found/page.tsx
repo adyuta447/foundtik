@@ -31,10 +31,7 @@ export default function AdminLostFound() {
 
   useEffect(() => {
     const loadData = async () => {
-      // Wait for auth to load
       if (authLoading) return;
-
-      // Check if user is admin
       if (!user || profile?.role !== "admin") {
         console.log("Not admin access blocked:", {
           user: user?.id,
@@ -58,10 +55,7 @@ export default function AdminLostFound() {
       }
 
       if (lostFoundData && lostFoundData.length > 0) {
-        // Get user IDs
         const userIds = [...new Set(lostFoundData.map((item) => item.user_id))];
-
-        // Query profiles for uploaders
         const { data: profilesData, error: profilesError } = await supabase
           .from("profiles")
           .select("id, name")
@@ -103,31 +97,26 @@ export default function AdminLostFound() {
       .eq("id", id);
 
     if (!error) {
-      // Reload data
       const { data: lostFoundData, error: lostFoundError } = await supabase
         .from("lost_found")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (!lostFoundError && lostFoundData) {
-        // Get user IDs
         const userIds = [...new Set(lostFoundData.map((item) => item.user_id))];
 
-        // Query profiles for uploaders
         const { data: profilesData, error: profilesError } = await supabase
           .from("profiles")
           .select("id, name")
           .in("id", userIds);
 
         if (profilesError) {
-          // Still show items without profile names
           const itemsWithoutProfiles = lostFoundData.map((item) => ({
             ...item,
             profiles: { name: "Unknown" },
           })) as LostFoundWithProfile[];
           setItems(itemsWithoutProfiles);
         } else {
-          // Map profiles to items
           const profileMap = new Map(profilesData?.map((p) => [p.id, p]) || []);
           const itemsWithProfiles = lostFoundData.map((item) => ({
             ...item,

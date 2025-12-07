@@ -203,7 +203,6 @@ function LostFoundDetailContent() {
 
           {/* Content Section */}
           <div className="p-6 sm:p-8 lg:p-10">
-            {/* Title & Status Badge */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
                 {item.nama_barang}
@@ -215,8 +214,6 @@ function LostFoundDetailContent() {
                 {statusInfo.label}
               </span>
             </div>
-
-            {/* Info Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               <div className="group bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-5 border border-purple-200 hover:shadow-md transition-all">
                 <div className="flex items-start gap-3">

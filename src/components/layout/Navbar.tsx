@@ -14,12 +14,10 @@ export default function Navbar() {
 
   const pathForRole = (path: string) => {
     if (profile?.role === "admin") {
-      // For admin, map list routes to clean admin routes
       if (path === "/keluhan-list") return "/admin/keluhan";
       if (path === "/lost-found-list") return "/admin/lost-found";
       return `/admin${path}`;
     }
-    // User: use original paths
     return path;
   };
 
