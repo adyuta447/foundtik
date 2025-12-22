@@ -138,7 +138,7 @@ export default function LostFoundList() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen  p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -163,7 +163,6 @@ export default function LostFoundList() {
               </button>
             </div>
 
-            {/* Stats Cards */}
             {items.length > 0 && (
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="bg-white rounded-xl p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">

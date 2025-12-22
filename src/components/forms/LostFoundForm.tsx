@@ -189,7 +189,7 @@ export default function LostFoundForm({ onClose }: { onClose: () => void }) {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 rounded-md bg-blue-600 text-white"
+          className="px-4 py-2 rounded-xl bg-blue-600 text-white"
         >
           {loading ? "Menyimpan..." : "Upload Barang"}
         </button>

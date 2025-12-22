@@ -118,7 +118,7 @@ export default function KeluhanList() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -394,7 +394,6 @@ export default function KeluhanList() {
                 </div>
               </div>
 
-              {/* Mobile/Tablet Card View */}
               <div className="lg:hidden space-y-4">
                 {filteredKeluhan.map((item) => {
                   const statusInfo = getStatusInfo(item.status);

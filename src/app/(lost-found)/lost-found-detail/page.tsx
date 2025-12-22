@@ -172,10 +172,10 @@ function LostFoundDetailContent() {
   const StatusIcon = statusInfo.icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8">
       <div className="max-w-5xl mx-auto">
         <button
-          onClick={() => router.push("/(lost-found)/lost-found-list")}
+          onClick={() => router.push("/lost-found-list")}
           className="group inline-flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-6 px-4 py-2 rounded-xl hover:bg-white/60 transition-all"
         >
           <ArrowLeft
@@ -184,10 +184,7 @@ function LostFoundDetailContent() {
           />
           <span className="font-medium">Kembali</span>
         </button>
-
-        {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          {/* Image Section */}
           {item.foto_url && (
             <div className="relative w-full h-64 sm:h-80 lg:h-96 bg-gradient-to-br from-gray-100 to-gray-200">
               <Image
@@ -200,8 +197,6 @@ function LostFoundDetailContent() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
             </div>
           )}
-
-          {/* Content Section */}
           <div className="p-6 sm:p-8 lg:p-10">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
@@ -267,8 +262,6 @@ function LostFoundDetailContent() {
                 </div>
               </div>
             </div>
-
-            {/* Description Section */}
             <div className="bg-gray-50 rounded-xl p-6 sm:p-8 mb-8 border border-gray-200">
               <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <div className="w-1 h-6 bg-blue-600 rounded-full"></div>
@@ -278,8 +271,6 @@ function LostFoundDetailContent() {
                 {item.deskripsi}
               </p>
             </div>
-
-            {/* Uploader Info */}
             {uploader && (
               <div className="bg-blue-50 rounded-xl p-6 mb-8 border border-blue-200">
                 <div className="flex items-start gap-4">

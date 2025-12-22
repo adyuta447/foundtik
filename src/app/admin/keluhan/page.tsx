@@ -136,22 +136,16 @@ export default function AdminKeluhan() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <div className="animate-spin h-8 w-8 border-4 border-blue-200 border-t-blue-600 rounded-full"></div>
-          <p className="text-center text-gray-600 mt-4">
-            Memuat data keluhan...
-          </p>
-        </div>
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-blue-200 border-t-blue-600 rounded-full"></div>
       </div>
     );
   }
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
               Kelola Keluhan
@@ -160,8 +154,6 @@ export default function AdminKeluhan() {
               Pantau dan update status keluhan dari mahasiswa
             </p>
           </div>
-
-          {/* Filter Buttons */}
           <div className="mb-8 flex flex-wrap gap-3">
             {["semua", "menunggu", "diproses", "selesai"].map((status) => (
               <button
@@ -178,8 +170,6 @@ export default function AdminKeluhan() {
               </button>
             ))}
           </div>
-
-          {/* Content */}
           {keluhan.length === 0 ? (
             <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -226,14 +216,16 @@ export default function AdminKeluhan() {
                         >
                           <td className="px-6 py-4">
                             {item.foto_url ? (
-                              <Image
-                                src={item.foto_url}
-                                alt={item.judul}
-                                width={64}
-                                height={64}
-                                unoptimized
-                                className="w-16 h-16 object-cover rounded-xl"
-                              />
+                              <div className="w-32 h-32 sm:w-40 sm:h-16 overflow-hidden rounded-lg shadow-md">
+                                <Image
+                                  src={item.foto_url}
+                                  alt={item.judul}
+                                  width={128}
+                                  height={128}
+                                  unoptimized
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
                             ) : (
                               <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center">
                                 <ImageIcon
