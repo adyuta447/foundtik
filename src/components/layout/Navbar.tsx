@@ -45,8 +45,6 @@ export default function Navbar() {
               alt="FoundTIK Logo"
             />
           </div>
-
-          {/* Desktop */}
           <div className="hidden md:flex items-center space-x-4">
             <Link
               href={pathForRole("/")}

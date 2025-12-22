@@ -118,7 +118,7 @@ function LostFoundDetailContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <div className="flex items-center justify-center space-x-2">
@@ -143,7 +143,7 @@ function LostFoundDetailContent() {
 
   if (!item) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

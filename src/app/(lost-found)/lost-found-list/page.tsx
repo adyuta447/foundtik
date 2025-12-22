@@ -115,7 +115,7 @@ export default function LostFoundList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen  p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <div className="flex items-center justify-center space-x-2">
@@ -164,66 +164,62 @@ export default function LostFoundList() {
             </div>
 
             {items.length > 0 && (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div className="bg-white rounded-xl p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-                  <div className="flex items-center justify-between">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg flex items-center justify-center">
+                      <Package className="text-purple-700 w-5 h-5" />
+                    </div>
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Total Barang</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-xs text-gray-600">Barang</p>
+                      <p className="text-xl font-bold text-gray-900">
                         {stats.total}
                       </p>
                     </div>
-                    <div className="p-3 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl">
-                      <Package className="text-purple-700" size={24} />
-                    </div>
                   </div>
                 </div>
-
-                <div className="bg-white rounded-xl p-5 shadow-md border border-emerald-200 hover:shadow-lg transition-shadow">
-                  <div className="flex items-center justify-between">
+                <div className="bg-white rounded-xl p-4 shadow-md border border-emerald-200 hover:shadow-lg transition-shadow">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-lg flex items-center justify-center">
+                      <Package className="text-emerald-700 w-5 h-5" />
+                    </div>
                     <div>
-                      <p className="text-sm text-emerald-600 mb-1">Tersedia</p>
-                      <p className="text-2xl font-bold text-emerald-700">
+                      <p className="text-xs text-emerald-600">Tersedia</p>
+                      <p className="text-xl font-bold text-emerald-700">
                         {stats.tersedia}
                       </p>
                     </div>
-                    <div className="p-3 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl">
-                      <Package className="text-emerald-700" size={24} />
-                    </div>
                   </div>
                 </div>
-
-                <div className="bg-white rounded-xl p-5 shadow-md border border-amber-200 hover:shadow-lg transition-shadow">
-                  <div className="flex items-center justify-between">
+                <div className="bg-white rounded-xl p-4 shadow-md border border-amber-200 hover:shadow-lg transition-shadow">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg flex items-center justify-center">
+                      <Clock className="text-amber-700 w-5 h-5" />
+                    </div>
                     <div>
-                      <p className="text-sm text-amber-600 mb-1">Verifikasi</p>
-                      <p className="text-2xl font-bold text-amber-700">
+                      <p className="text-xs text-amber-600">Verifikasi</p>
+                      <p className="text-xl font-bold text-amber-700">
                         {stats.verifikasi}
                       </p>
                     </div>
-                    <div className="p-3 bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl">
-                      <Clock className="text-amber-700" size={24} />
-                    </div>
                   </div>
                 </div>
-
-                <div className="bg-white rounded-xl p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-                  <div className="flex items-center justify-between">
+                <div className="bg-white rounded-xl p-4 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
+                      <CheckCircle2 className="text-gray-700 w-5 h-5" />
+                    </div>
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Dikembalikan</p>
-                      <p className="text-2xl font-bold text-gray-700">
+                      <p className="text-xs text-gray-600">Dikembalikan</p>
+                      <p className="text-xl font-bold text-gray-700">
                         {stats.returned}
                       </p>
-                    </div>
-                    <div className="p-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
-                      <CheckCircle2 className="text-gray-700" size={24} />
                     </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Search and Filter */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <div className="flex-1 relative">
                 <Search
@@ -286,7 +282,6 @@ export default function LostFoundList() {
             </div>
           </div>
 
-          {/* Content */}
           {filtered.length === 0 ? (
             <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
               <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center mx-auto mb-6">
