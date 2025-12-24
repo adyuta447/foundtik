@@ -147,9 +147,7 @@ export default function KeluhanList() {
                 <div className="bg-white rounded-xl p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">
-                        Total Keluhan
-                      </p>
+                      <p className="text-sm text-gray-600 mb-1">Keluhan</p>
                       <p className="text-2xl font-bold text-gray-900">
                         {stats.total}
                       </p>
@@ -177,7 +175,7 @@ export default function KeluhanList() {
                 <div className="bg-white rounded-xl p-5 shadow-md border border-blue-200 hover:shadow-lg transition-shadow">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-blue-600 mb-1">Diproses</p>
+                      <p className="text-sm text-blue-600 mb-1">Proses</p>
                       <p className="text-2xl font-bold text-blue-700">
                         {stats.diproses}
                       </p>
