@@ -1,23 +1,42 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import { Upload } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { supabase, LostFound } from "@/lib/supabase";
 import { uploadFile } from "@/lib/storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
-export default function LostFoundForm({ onClose }: { onClose: () => void }) {
+interface LostFoundFormProps {
+  onClose: () => void;
+  item?: LostFound | null;
+}
+
+export default function LostFoundForm({ onClose, item }: LostFoundFormProps) {
   const router = useRouter();
   const { user } = useAuth();
-  const [formData, setFormData] = useState({
-    nama_barang: "",
-    lokasi_ditemukan: "",
-    tanggal_ditemukan: new Date().toISOString().split("T")[0],
-    deskripsi: "",
-  });
+  const isEditMode = !!item;
+
+  const initialFormData = useMemo(() => {
+    if (item) {
+      return {
+        nama_barang: item.nama_barang,
+        lokasi_ditemukan: item.lokasi_ditemukan,
+        tanggal_ditemukan: item.tanggal_ditemukan,
+        deskripsi: item.deskripsi,
+      };
+    }
+    return {
+      nama_barang: "",
+      lokasi_ditemukan: "",
+      tanggal_ditemukan: new Date().toISOString().split("T")[0],
+      deskripsi: "",
+    };
+  }, [item]);
+
+  const [formData, setFormData] = useState(initialFormData);
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(item?.foto_url || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -35,7 +54,7 @@ export default function LostFoundForm({ onClose }: { onClose: () => void }) {
     setLoading(true);
     setError("");
 
-    let fotoUrl = null;
+    let fotoUrl = preview;
 
     if (file) {
       const uploadResult = await uploadFile(file, "lostfound", user.id);
@@ -44,23 +63,44 @@ export default function LostFoundForm({ onClose }: { onClose: () => void }) {
         setLoading(false);
         return;
       }
-      fotoUrl = uploadResult.url;
+      fotoUrl = uploadResult.url || null;
     }
 
-    const { error: insertError } = await supabase.from("lost_found").insert({
-      user_id: user.id,
-      nama_barang: formData.nama_barang,
-      lokasi_ditemukan: formData.lokasi_ditemukan,
-      tanggal_ditemukan: formData.tanggal_ditemukan,
-      deskripsi: formData.deskripsi,
-      foto_url: fotoUrl,
-      status: "tersedia",
-    });
+    if (isEditMode && item) {
+      // Update mode
+      const { error: updateError } = await supabase
+        .from("lost_found")
+        .update({
+          nama_barang: formData.nama_barang,
+          lokasi_ditemukan: formData.lokasi_ditemukan,
+          tanggal_ditemukan: formData.tanggal_ditemukan,
+          deskripsi: formData.deskripsi,
+          ...(fotoUrl && { foto_url: fotoUrl }),
+        })
+        .eq("id", item.id);
 
-    if (insertError) {
-      setError(insertError.message);
-      setLoading(false);
-      return;
+      if (updateError) {
+        setError(updateError.message);
+        setLoading(false);
+        return;
+      }
+    } else {
+      // Create mode
+      const { error: insertError } = await supabase.from("lost_found").insert({
+        user_id: user.id,
+        nama_barang: formData.nama_barang,
+        lokasi_ditemukan: formData.lokasi_ditemukan,
+        tanggal_ditemukan: formData.tanggal_ditemukan,
+        deskripsi: formData.deskripsi,
+        foto_url: fotoUrl,
+        status: "tersedia",
+      });
+
+      if (insertError) {
+        setError(insertError.message);
+        setLoading(false);
+        return;
+      }
     }
 
     setLoading(false);
@@ -191,7 +231,11 @@ export default function LostFoundForm({ onClose }: { onClose: () => void }) {
           disabled={loading}
           className="px-4 py-2 rounded-xl bg-blue-600 text-white"
         >
-          {loading ? "Menyimpan..." : "Upload Barang"}
+          {loading
+            ? "Menyimpan..."
+            : isEditMode
+            ? "Simpan Perubahan"
+            : "Upload Barang"}
         </button>
       </div>
     </form>

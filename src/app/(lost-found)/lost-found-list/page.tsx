@@ -115,23 +115,8 @@ export default function LostFoundList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen  p-4 sm:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce"></div>
-              <div
-                className="w-3 h-3 bg-purple-500 rounded-full animate-bounce"
-                style={{ animationDelay: "0.1s" }}
-              ></div>
-              <div
-                className="w-3 h-3 bg-purple-500 rounded-full animate-bounce"
-                style={{ animationDelay: "0.2s" }}
-              ></div>
-            </div>
-            <p className="text-center text-gray-600 mt-4">Memuat barang...</p>
-          </div>
-        </div>
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-blue-200 border-t-blue-600 rounded-full"></div>
       </div>
     );
   }

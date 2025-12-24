@@ -270,7 +270,7 @@ export default function AdminKeluhan() {
                                 )
                               }
                               disabled={updatingId === item.id}
-                              className="px-4 py-2 border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:border-blue-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                              className="px-4 py-2  border-2 border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:border-blue-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
                             >
                               <option value="menunggu">Menunggu</option>
                               <option value="diproses">Diproses</option>
