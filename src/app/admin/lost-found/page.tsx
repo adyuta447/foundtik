@@ -332,7 +332,7 @@ export default function AdminLostFound() {
                           )}
                         </div>
                       </td>
-                      <td className="w-40 px-4 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <select
                           value={item.status}
                           onChange={(e) =>
@@ -345,7 +345,7 @@ export default function AdminLostFound() {
                             )
                           }
                           disabled={updatingId === item.id}
-                          className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-sm
+                          className="px-2 sm:px-3 py-2 border-2 border-gray-300 rounded-lg text-xs sm:text-sm
                focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                disabled:bg-gray-100 hover:border-gray-400 transition-colors"
                         >
@@ -371,7 +371,6 @@ export default function AdminLostFound() {
           setSelectedItem(null);
         }}
         onVerified={() => {
-          // Reload data
           const loadData = async () => {
             const { data: lostFoundData, error: lostFoundError } =
               await supabase
